@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """
 Usage:
-    python split_data.py --path ./data/PSPOption_RAW_Data.pkl --train_size 0.7 --valid_size 0.15 --test_size 0.15 --out ./data/PSPOption_RAW_Data
+    python split_data.py --path ./data/PSPOption_RAW_Data_no_missing.pkl --train_size 0.7 --valid_size 0.15 --test_size 0.15 --out ./data/PSPOption_RAW_Data_no_missing
 
 Runnig this will create 3 files:
-    ./data/PSPOption_RAW_Data_TRAIN.pkl
-    ./data/PSPOption_RAW_Data_VALID.pkl
-    ./data/PSPOption_RAW_Data_TEST.pkl
+    ./data/PSPOption_RAW_Data_no_missing_TRAIN.pkl
+    ./data/PSPOption_RAW_Data__no_missing_VALID.pkl
+    ./data/PSPOption_RAW_Data__no_missing_TEST.pkl
 
 """
 import argparse
