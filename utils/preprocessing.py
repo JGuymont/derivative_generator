@@ -1,15 +1,36 @@
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 
 class Preprocessor:
-    def __init__(self, categorical_features=None, categorical_transform='onehot', drop_na=False, to_drop=None):
+    """
+    Preprocessing function
+
+    Arguments
+        categorical_features: list or None, default: None
+            List of categorical features
+        categorical_transform: str {'onehot', 'category', None}, default: 'onehot'
+            Transformation to apply to the categorical features. 'onehot' means that
+            the categorical features are transform in one-hot vector. 'category' means
+            that an integer is assigned to each the category.
+        to_drop: list or None, default: None
+            List of the name of the features to drop
+
+    Raises:
+        ValueError: the value of categorical_transform is not valid
+
+    Returns:
+        pandas.DataFrame: the preprocessed dataframe
+    """
+
+    def __init__(self, categorical_features, numerical_features):
         self.categorical_features = categorical_features
-        self.categorical_transform = categorical_transform
-        self.drop_na = drop_na
-        self.to_drop = to_drop
+        self.numerical_features = numerical_features
+        self.all_features = categorical_features + numerical_features
 
     def cat2onhot(self, dataframe):
         dataframe = pd.get_dummies(dataframe, columns=self.categorical_features)
+        return dataframe
 
     def cat2int(self, dataframe):
         for feature in self.categorical_features:
@@ -19,13 +40,9 @@ class Preprocessor:
     def __preprocess_categorical(self):
         return self.categorical_features and self.categorical_transform
 
-    def preprocess(self, dataframe):
+    def preprocess_(self, dataframe):
 
-        if self.to_drop:
-            dataframe = dataframe.drop(self.to_drop, axis=1)
-
-        if self.drop_na:
-            dataframe.dropna(inplace=True)
+        dataframe = dataframe[self.all_features]
 
         if self.__preprocess_categorical():
             if self.categorical_transform == 'onehot':
@@ -34,6 +51,15 @@ class Preprocessor:
                 return self.cat2int(dataframe)
             else:
                 raise ValueError
+        return dataframe
+
+    def preprocess(self, data):
+        data = data[self.all_features]
+        label_encoders = {}
+        for feature in self.categorical_features:
+            label_encoders[feature] = LabelEncoder()
+            data.loc[feature] = label_encoders[feature].fit_transform(data[feature])
+        return data
 
     def __call__(self, dataframe):
         return self.preprocess(dataframe)
